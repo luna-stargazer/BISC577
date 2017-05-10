@@ -58,7 +58,7 @@ model_myc2$result$Rsquared[1]
 #Q5
 x<-c(model_mad1$result$Rsquared[1], model_max1$result$Rsquared[1], model_myc1$result$Rsquared[1])
 y<-c(model_mad2$result$Rsquared[1], model_max2$result$Rsquared[1], model_myc2$result$Rsquared[1])
-plot(x,y, pch=as.integer(att),ylim=c(0.75,0.9), xlim=c(0.76,0.9),xlab= expression('1-mer R' ^ 2), ylab= expression('1-mer+shape R' ^ 2))
+plot(x,y, pch=as.integer(att),ylim=c(0.75,1), xlim=c(0.75,1),xlab= expression('1-mer R' ^ 2), ylab= expression('1-mer+shape R' ^ 2))
 abline(a = 0, b=1)
 
 
