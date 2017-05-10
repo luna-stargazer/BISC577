@@ -1,4 +1,5 @@
 
+
 library(DNAshapeR)
 library(caret)
 library(ROCR)
@@ -21,11 +22,11 @@ df_mad2 <- data.frame(affinity=experimentalData_mad$V2, featureVector2)
 
 trainControl<- trainControl(method = "cv", number = 10, savePredictions = TRUE) 
 
-model_mad1 <- train (affinity~ ., data = df_mad1, trControl=trainControl, method="lm", preProcess=NULL) 
-model_mad2 <- train (affinity~ ., data = df_mad2, trControl=trainControl, method="lm", preProcess=NULL) 
+model_mad1 <- train (affinity~ ., data = df_mad1, trControl=trainControl, method = "glmnet", tuneGrid = data.frame(alpha = 0, lambda = c(2^c(-15:15))))
+model_mad2 <- train (affinity~ ., data = df_mad2, trControl=trainControl, method = "glmnet", tuneGrid = data.frame(alpha = 0, lambda = c(2^c(-15:15))))
 
-summary(model_mad1)$r.squared
-summary(model_mad2)$r.squared
+model_mad1$result$Rsquared[1]
+model_mad2$result$Rsquared[1]
 
 
 featureVector1 <- encodeSeqShape(fn2, getShape(fn2) , featureType1)
@@ -35,11 +36,11 @@ df_max1 <- data.frame(affinity=experimentalData_max$V2, featureVector1)
 df_max2 <- data.frame(affinity=experimentalData_max$V2, featureVector2)
 
 
-model_max1 <- train (affinity~ ., data = df_max1, trControl=trainControl, method="lm", preProcess=NULL) 
-model_max2 <- train (affinity~ ., data = df_max2, trControl=trainControl, method="lm", preProcess=NULL) 
+model_max1 <- train (affinity~ ., data = df_max1, trControl=trainControl, method = "glmnet", tuneGrid = data.frame(alpha = 0, lambda = c(2^c(-15:15))))
+model_max2 <- train (affinity~ ., data = df_max2, trControl=trainControl, method = "glmnet", tuneGrid = data.frame(alpha = 0, lambda = c(2^c(-15:15))))
 
-summary(model_max1)$r.squared
-summary(model_max2)$r.squared
+model_max1$result$Rsquared[1]
+model_max2$result$Rsquared[1]
 
 
 featureVector1 <- encodeSeqShape(fn3, getShape(fn3) , featureType1)
@@ -48,16 +49,16 @@ experimentalData_myc<- read.table("/Users/luna/Documents/577a/Myc.txt")
 df_myc1 <- data.frame(affinity=experimentalData_myc$V2, featureVector1)
 df_myc2 <- data.frame(affinity=experimentalData_myc$V2, featureVector2)
 
-model_myc1 <- train (affinity~ ., data = df_myc1, trControl=trainControl, method="lm", preProcess=NULL) 
-model_myc2 <- train (affinity~ ., data = df_myc2, trControl=trainControl, method="lm", preProcess=NULL) 
+model_myc1 <- train (affinity~ ., data = df_myc1, trControl=trainControl, method = "glmnet", tuneGrid = data.frame(alpha = 0, lambda = c(2^c(-15:15))))
+model_myc2 <- train (affinity~ ., data = df_myc2, trControl=trainControl, method = "glmnet", tuneGrid = data.frame(alpha = 0, lambda = c(2^c(-15:15))))
 
-summary(model_myc1)$r.squared
-summary(model_myc2)$r.squared
+model_myc1$result$Rsquared[1]
+model_myc2$result$Rsquared[1]
 
 #Q5
-x<-c(summary(model_mad1)$r.squared, summary(model_max1)$r.squared, summary(model_myc1)$r.squared)
-y<-c(summary(model_mad2)$r.squared, summary(model_max2)$r.squared, summary(model_myc2)$r.squared)
-plot(x,y, pch=as.integer(att),ylim=c(0.75,1), xlim=c(0.76,1),xlab= expression('1-mer R' ^ 2), ylab= expression('1-mer+shape R' ^ 2))
+x<-c(model_mad1$result$Rsquared[1], model_max1$result$Rsquared[1], model_myc1$result$Rsquared[1])
+y<-c(model_mad2$result$Rsquared[1], model_max2$result$Rsquared[1], model_myc2$result$Rsquared[1])
+plot(x,y, pch=as.integer(att),ylim=c(0.75,0.9), xlim=c(0.76,0.9),xlab= expression('1-mer R' ^ 2), ylab= expression('1-mer+shape R' ^ 2))
 abline(a = 0, b=1)
 
 
@@ -140,3 +141,7 @@ text(x=0.5, y = 0.5, labels = paste('AUC=', round(auc,3)) )
 auc2 <- performance(prediction2, "auc")
 auc2 <- unlist(slot(auc2, "y.values"))
 text(x=0.5, y = 0.5, labels = paste('AUC=', round(auc2,3)) )
+
+
+
+
